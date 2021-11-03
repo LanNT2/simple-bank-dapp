@@ -15,12 +15,10 @@ contract ERC20Token is ERC20Template, CustomOwner{
     mapping(address => uint256) private balances;
     
     mapping(address => mapping(address => uint256)) private allowances;
-    
-    constructor (uint256 _initialSupply) public {
-        _name = "ERC20Token";
-        _symbol = "ERC20Token";
-        balances[msg.sender] = _initialSupply;
-        _totalSupply=_initialSupply;
+
+    constructor (string memory name, string memory symbol) public {
+        _name =name;
+        _symbol =symbol;
     }
 
     function balanceOf(address account) public view  override returns (uint256) {
@@ -34,8 +32,25 @@ contract ERC20Token is ERC20Template, CustomOwner{
     function symbol() public view override returns (string memory) {
         return _symbol;
     }
-    
-    function totalSupply() public view override returns (uint256) {
+
+    /**
+     * @dev Returns the number of decimals used to get its user representation.
+     * For example, if `decimals` equals `2`, a balance of `505` tokens should
+     * be displayed to a user as `5.05` (`505 / 10 ** 2`).
+     *
+     * Tokens usually opt for a value of 18, imitating the relationship between
+     * Ether and Wei. This is the value {ERC20} uses, unless this function is
+     * overridden;
+     *
+     * NOTE: This information is only used for _display_ purposes: it in
+     * no way affects any of the arithmetic of the contract, including
+     * {IERC20-balanceOf} and {IERC20-transfer}.
+     */
+    function decimals() public pure override returns (uint8) {
+        return 18;
+    }
+
+     function totalSupply() public view override returns (uint256) {
         return _totalSupply;
     }
     
@@ -92,6 +107,17 @@ contract ERC20Token is ERC20Template, CustomOwner{
 
      function getAddress() public view returns (address) {
         return address(this);
+    }
+
+    function mint(address account, uint256 amount) public {
+        require(account != address(0), "ERC20: mint to the zero address");
+        _totalSupply += amount;
+        balances[account] += amount;
+        emit Transfer(address(0), account, amount);
+    }
+    function foo() external pure returns (uint256) {
+    uint256 a = type(uint256).max;
+    return a;
     }
 
 }

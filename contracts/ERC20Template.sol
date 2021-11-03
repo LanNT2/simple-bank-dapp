@@ -20,7 +20,8 @@ interface ERC20Template {
     
     function symbol() external view returns(string memory);
 
-    
+     function decimals() external view returns (uint8);
+
    /*  Return the amount of tokens in existence.*/
       
      function totalSupply() external view returns (uint256);
