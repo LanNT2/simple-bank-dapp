@@ -7,24 +7,66 @@
         <title>Simple Blockchain Bank Dapp</title>
     </head>
     <body>
-      <div class="row">
-        <div class="col-2" id="account"></div>
-       <div class="col-8">
-        <h1 style="color: black;font-weight: bold;text-align: center;">Deposit</h1>
-        <form>
-            <div class="form-group">
-              <label for="deposit">Amount:</label>
-              <input type="number" class="form-control" placeholder="Enter Amount" id="deposit">
-            </div>
-            <div class="form-group">
-              <label for="numberOfDays">Number Of Days:</label>
-              <input type="number" class="form-control" placeholder="Enter number of days" id="numberOfDays">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-       </div>
-       <div class="col-2"></div>
+      <div class="row mt-5">
+        <div class="col-2"></div>
+        <div class="col-4">
+          <h1 style="color: black;font-weight: bold;text-align: center;">Deposit</h1>
+          <form>
+              <div class="form-group">
+                <label for="deposit">Amount:</label>
+                <input type="number" class="form-control" placeholder="Enter Amount" id="deposit">
+              </div>
+              <div class="form-group">
+                <label for="numberOfDays">Number Of Days:</label>
+                <input type="number" class="form-control" placeholder="Enter number of days" id="numberOfDays">
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="col-4">
+          <h1 style="color: black;font-weight: bold;text-align: center;">Withdraw</h1>
+          <form>
+              <div class="form-group">
+                <label for="deposit">Amount:</label>
+                <input type="number" class="form-control" placeholder="Enter Amount" id="deposit">
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+         </div>
+        <div class="col-2"></div>
       </div>
+      <div class="row mt-3 pt-4">
+        <div class="col-2"></div>
+        <div class="col-8">
+          <h1></h1>
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Account</th>
+                <th scope="col">Address</th>
+                <th scope="col">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-2"></div>
+      </div>
+     
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -7,7 +7,6 @@ import "./ERC20Template.sol";
 import "./CustomOwner.sol";
 
 contract ERC20Token is ERC20Template, CustomOwner{
-    //Total number of tokens in existence.
     uint256 private _totalSupply;
     string private _name;
     string private _symbol;
@@ -54,7 +53,7 @@ contract ERC20Token is ERC20Template, CustomOwner{
         return _totalSupply;
     }
     
-    function transfer(address recipient, uint256 amount) public override returns (bool) {
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
         _transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -72,16 +71,15 @@ contract ERC20Token is ERC20Template, CustomOwner{
         return allowances[owner][spender];
     }
     
-    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
         _transfer(sender,recipient,amount);
         uint256 allowance = allowances[sender][msg.sender];
         require(amount <= allowance,"transfer amount can not exceeds the allowance");
         _approve(sender,msg.sender,allowance - amount);
-        return true;
-        
+        return true;  
     }
     
-    function approve(address spender, uint256 amount) public override returns (bool) {
+    function approve(address spender, uint256 amount) public virtual override returns (bool) {
         _approve(msg.sender, spender, amount);
         return true;
     }
@@ -93,12 +91,12 @@ contract ERC20Token is ERC20Template, CustomOwner{
         emit Approval(owner, spender, amount);
     }
     
-     function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
         _approve(msg.sender, spender, allowances[msg.sender][spender] + addedValue);
         return true;
     }
     
-    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
         uint256 currentAllowance = allowances[msg.sender][spender];
         require(currentAllowance >= subtractedValue, "decreased allowance below zero");
         _approve(msg.sender, spender, currentAllowance - subtractedValue);
@@ -109,15 +107,11 @@ contract ERC20Token is ERC20Template, CustomOwner{
         return address(this);
     }
 
-    function mint(address account, uint256 amount) public {
+    function mint(address account, uint256 amount) public virtual {
         require(account != address(0), "ERC20: mint to the zero address");
         _totalSupply += amount;
         balances[account] += amount;
         emit Transfer(address(0), account, amount);
-    }
-    function foo() external pure returns (uint256) {
-    uint256 a = type(uint256).max;
-    return a;
     }
 
 }

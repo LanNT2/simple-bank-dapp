@@ -19,6 +19,7 @@ contract("Dapp", async accounts => {
     before("mint() RKToken ", async function () {
         customer = accounts[0];
         rkToken = await RKToken.deployed();
+        dappInstance = await Dapp.deployed();
 
         //decimals
         tokenDecimals = await rkToken.decimals();
@@ -26,8 +27,6 @@ contract("Dapp", async accounts => {
         await rkToken.mint(customer, web3.utils.toBN(999 * Math.pow(10, tokenDecimals)));
 
         totalSupply = await rkToken.totalSupply();
-
-        dappInstance = await Dapp.deployed();
 
         depositRatePerYear = await dappInstance.depositRatePerYear();
 
@@ -131,4 +130,36 @@ contract("Dapp", async accounts => {
             assert.include(error.message, 'Caller is not owner');
         }
     });
+
+    //Test Pausable
+
+    it("Test deposit fail when owner pause every transactions", async function () {
+        try {
+            await dappInstance.pause();
+            let numberOfTokens = 50.05;
+            let m = web3.utils.toBN(numberOfTokens * Math.pow(10, tokenDecimals));
+            await dappInstance.deposit(m);
+            let dappBalance = await rkToken.balanceOf(dappAddress);
+            let customerBalanceAfterDeposit = await rkToken.balanceOf(customer);
+            assert.deepEqual(dappBalance.toString(), m.toString());
+            assert.equal(customerBalanceAfterDeposit.toString(), (balanceOfCustomer - m).toString());
+        } catch (error) {
+            assert.include(error.message, "Pausable: paused");
+        }
+    });
+
+    it("Test withdraw fail when owner pause the every transactions", async function () {
+        try {
+            await dappInstance.pause();
+            const withdrawAmount = 20.002;
+            var w = web3.utils.toBN(withdrawAmount * Math.pow(10, tokenDecimals));
+            await dappInstance.withDraw(w);
+            let dappTotalSupply = await dappInstance.totalSupply();
+            dappBalance = await rkToken.balanceOf(dappAddress);
+            assert.equal(dappBalance.toString(), dappTotalSupply.toString()), "'Customer can withdraw money if not reach the deadline'";
+        } catch (error) {
+            assert.include(error.message, "Pausable: paused");
+        }
+    });
+
 });
