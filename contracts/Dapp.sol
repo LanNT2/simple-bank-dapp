@@ -18,11 +18,14 @@ contract Dapp is CustomOwner,Pausable{
     
     event ReceiveTokens(address _sender, uint256 amount);
     
-    constructor (uint256 _depositRatePerYear, uint256 _numberOfDays) public {
+    constructor (uint256 _depositRatePerYear) public {
         depositRatePerYear = _depositRatePerYear;
-        numberOfDays = _numberOfDays;
-        deadline = block.timestamp+ (_numberOfDays * 1 days);
+        deadline = block.timestamp+ (numberOfDays * 1 days);
     }
+    function setNumberOfDays (uint256 __numberOfDays) public {
+        numberOfDays = __numberOfDays;
+    }
+
     function calculateProfit(uint256 amount, uint256 numberOfDays) internal returns (uint256){
         return amount + (amount*depositRatePerYear*numberOfDays)/(365*100);
     }

@@ -1,21 +1,31 @@
 {
-  "name": "bank-app",
+  "name": "bank-web-app",
   "version": "1.0.0",
   "description": "simple blockchain bank dapp",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "LanNT2",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "web3": "^1.6.0",
     "@openzeppelin/contracts": "^4.3.2",
     "@truffle/hdwallet-provider": "^1.5.1",
-    "hardhat": "^2.6.7"
+    "express": "^4.17.1",
+    "hardhat": "^2.6.7",
+    "web3": "^1.6.0"
   },
   "directories": {
     "test": "test"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LanNT2/simple-bank-dapp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LanNT2/simple-bank-dapp/issues"
+  },
+  "homepage": "https://github.com/LanNT2/simple-bank-dapp#readme"
 }

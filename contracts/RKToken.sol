@@ -4,8 +4,11 @@ pragma solidity ^0.8.0;
 import "./ERC20Token.sol";
 
 contract RKToken is ERC20Token{
+    
+    uint256 private initialSupply = 999*(10**18);
 
     constructor () public ERC20Token("RK Token", "RKToken") {
+        mint(msg.sender,initialSupply);
     }
 
     function transfer(address recipient, uint256 amount) public override returns (bool) {
