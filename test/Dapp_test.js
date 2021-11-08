@@ -9,8 +9,6 @@ contract("Dapp", async accounts => {
     //dapp
     var dappInstance;
     var depositRatePerYear;
-    var numberOfDays;
-    var deadline;
     var dappAddress;
     var rkTokenAddress;
     var customer;
@@ -24,25 +22,17 @@ contract("Dapp", async accounts => {
         //decimals
         tokenDecimals = await rkToken.decimals();
 
-        await rkToken.mint(customer, web3.utils.toBN(999 * Math.pow(10, tokenDecimals)));
-
         totalSupply = await rkToken.totalSupply();
 
         depositRatePerYear = await dappInstance.depositRatePerYear();
-
-        numberOfDays = await dappInstance.numberOfDays();
 
         dappAddress = await dappInstance.getAddress();
 
         rkTokenAddress = await rkToken.getAddress();
 
-        await rkToken.approve(rkTokenAddress, web3.utils.toBN(100 * Math.pow(10, tokenDecimals)));
+      // await rkToken.approve(rkTokenAddress, web3.utils.toBN(100 * Math.pow(10, tokenDecimals)));
 
         await rkToken.approve(dappAddress, web3.utils.toBN(100 * Math.pow(10, tokenDecimals)));
-
-        await dappInstance.setRKToken(rkTokenAddress);
-
-        await dappInstance.setCustomerAddress(customer);
     });
 
     it("Test mint() RKToken", async function () {
@@ -54,17 +44,12 @@ contract("Dapp", async accounts => {
 
     it("Test Initialize Dapp", async function () {
         assert.equal(depositRatePerYear.valueOf(), 10);
-        assert.equal(numberOfDays.valueOf(), 100);
-
-        deadline = await dappInstance.deadline();
-        console.log("deadline: " + deadline);
-
     });
 
     it("Test deposit success", async function () {
         let numberOfTokens = 50.05;
         let m = web3.utils.toBN(numberOfTokens * Math.pow(10, tokenDecimals));
-        await dappInstance.deposit(m);
+        await dappInstance.deposit(customer,m,100);
         let dappBalance = await rkToken.balanceOf(dappAddress);
         let customerBalanceAfterDeposit = await rkToken.balanceOf(customer);
         assert.deepEqual(dappBalance.toString(), m.toString());
@@ -76,7 +61,7 @@ contract("Dapp", async accounts => {
             let caller = accounts[1];
             let numberOfTokens = 50.05;
             let m = web3.utils.toBN(numberOfTokens * Math.pow(10, tokenDecimals));
-            await dappInstance.deposit(m, { from: caller });
+            await dappInstance.deposit(customer,m,100, { from: caller });
             let dappBalance = await rkToken.balanceOf(dappAddress);
             let customerBalanceAfterDeposit = await rkToken.balanceOf(customer);
             assert.deepEqual(dappBalance.toString(), m.toString());
@@ -113,15 +98,6 @@ contract("Dapp", async accounts => {
         }
     });
 
-    it("Test setRKToken fail when caller is not owner", async function () {
-        try {
-            let caller = accounts[1];
-            await dappInstance.setRKToken(rkTokenAddress,{ from: caller });
-        } catch (error) {
-            assert.include(error.message, 'Caller is not owner');
-        }
-    });
-
     it("Test setCustomerAddress fail when caller is not owner", async function () {
         try {
             let caller = accounts[1];
@@ -138,7 +114,7 @@ contract("Dapp", async accounts => {
             await dappInstance.pause();
             let numberOfTokens = 50.05;
             let m = web3.utils.toBN(numberOfTokens * Math.pow(10, tokenDecimals));
-            await dappInstance.deposit(m);
+            await dappInstance.deposit(customer,m,100);
             let dappBalance = await rkToken.balanceOf(dappAddress);
             let customerBalanceAfterDeposit = await rkToken.balanceOf(customer);
             assert.deepEqual(dappBalance.toString(), m.toString());

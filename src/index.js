@@ -29,9 +29,9 @@ if (typeof window.ethereum !== 'undefined') {
 console.log ( window.web3.currentProvider);
 var web3 = new Web3(window.web3.currentProvider);
 // contractAddress and abi are setted after contract deploy
-var contractAddress = '0x9cb9D0E2AE1314c2aE0b392a7D8d70BAf2986F27';
-var abi = 
-[
+//dappContract instance
+var dappAddress = '0x91105e1c17EbC5C448D5e6235f5bb7Aa246829a1';
+var dappAbi = [
 	{
 		"anonymous": false,
 		"inputs": [
@@ -112,8 +112,18 @@ var abi =
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_customerAddress",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "_numberOfTokens",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "__numberOfDays",
 				"type": "uint256"
 			}
 		],
@@ -152,32 +162,6 @@ var abi =
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "__numberOfDays",
-				"type": "uint256"
-			}
-		],
-		"name": "setNumberOfDays",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_tokenAddress",
-				"type": "address"
-			}
-		],
-		"name": "setRKToken",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "address",
 				"name": "newOwner",
 				"type": "address"
@@ -203,6 +187,11 @@ var abi =
 	},
 	{
 		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_tokenAddress",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
 				"name": "_depositRatePerYear",
@@ -304,16 +293,389 @@ var abi =
 		"type": "function"
 	}
 ];
-//contract instance
-var contract = new web3.eth.Contract(abi, contractAddress);
+var dappContract = new web3.eth.Contract(dappAbi, dappAddress);
 
-console.log(contract)
+//RKToken instance
+var rkTokenAddress = '0x54014371284a34883f7d2Be8537d7bbb01201482';
+var rkTokenAbi = [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipRenounced",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "subtractedValue",
+				"type": "uint256"
+			}
+		],
+		"name": "decreaseAllowance",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "addedValue",
+				"type": "uint256"
+			}
+		],
+		"name": "increaseAllowance",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "mint",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "transfer",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			}
+		],
+		"name": "allowance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "decimals",
+		"outputs": [
+			{
+				"internalType": "uint8",
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+var rkTokenContract = new web3.eth.Contract(rkTokenAbi, rkTokenAddress);
+
+console.log(rkTokenContract);
 
 // Accounts
 var account;
-
-console.log(web3.eth);
-
 web3.eth.getAccounts(function(err, accounts) {
   if (err != null) {
     alert("Error retrieving accounts.");
@@ -328,26 +690,51 @@ web3.eth.getAccounts(function(err, accounts) {
   web3.eth.defaultAccount = account;
 });
 
-console.log(contract.methods)
-
 //Smart contract functions
-function deposit() {
-	console.log("deposittt");
+ function deposit() {
+	console.log("-----------------deposit------------------");
   var amount = $("#depositAmount").val();
   var numberOfDays = $("#numberOfDays").val();
-  console.log(contract.methods);
-  contract.methods.setNumberOfDays(numberOfDays).send( {from: account}).then( function(tx) {
-    console.log("Transaction: ", tx);
+
+  //account (owner) approve for dapp to spend money after account deposit amount of money
+
+  rkTokenContract.methods.approve(dappAddress,amount).send({from:account}).then( function(tx) {
+    console.log("approve dappAddress : ", tx);
   });
-  contract.methods.deposit(amount).send( {from: account}).then( function(tx) {
-    console.log("Transaction: ", tx);
+
+  //deposit
+  dappContract.methods.deposit(account,amount,numberOfDays).send( {from: account}).then( function(tx) {
+    console.log("deposit : ", tx);
   });
+
+}
+function withdraw(){
+	console.log("---------------------------------withdraw-----------------------------------------")
+	var amount = $("#withdrawAmount").val();
+	 //deposit
+	dappContract.methods.withDraw(amount).send( {from: account}).then( function(tx) {
+		console.log("withdraw : ", tx);
+	});
 }
 
 function getDepositRatePerYear(){
-	contract.methods.depositRatePerYear().call().then( function( depositRatePerYear ) {
+	dappContract.methods.depositRatePerYear().call().then( function( depositRatePerYear ) {
 		console.log("depositRatePerYear: ", depositRatePerYear);
 		$("#depositRatePerYear").append(depositRatePerYear);
 	  });
+	  getInfo();
 }
+
+function getInfo(){
+	rkTokenContract.methods.allowance(account,rkTokenAddress).call().then(function(allowance){
+		console.log("rkTokenAddress allowance: "+ allowance);
+	});
+	rkTokenContract.methods.allowance(account,dappAddress).call().then(function(allowance){
+		console.log("dappAddress allowance: "+ allowance);
+	});
+	dappContract.methods.dappTotalSupply().call().then(function(dappTotalSupply){
+		console.log("dappTotalSupply: "+ dappTotalSupply);
+	});
+}
+
 

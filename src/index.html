@@ -8,8 +8,8 @@
     </head>
     <body>
       <div class="row mt-5">
-        <div class="col-2"></div>
-        <div class="col-4">
+        <div class="col-1"></div>
+        <div class="col-5">
           <h1 style="color: black;font-weight: bold;text-align: center;">Deposit</h1>
           <form >
               <div class="form-group">
@@ -23,56 +23,82 @@
               <a type="submit" class="btn btn-primary" onclick="deposit()" >Submit</a>
           </form>
         </div>
-        <div class="col-4">
+        <div class="col-5">
           <h1 style="color: black;font-weight: bold;text-align: center;">Withdraw</h1>
           <form>
               <div class="form-group">
-                <label for="deposit">Amount:</label>
-                <input type="number" class="form-control" placeholder="Enter Amount">
+                <label for="withdrawAmount">Amount:</label>
+                <input type="number" class="form-control" placeholder="Enter Amount" id="withdrawAmount">
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <a type="submit" class="btn btn-primary" onclick="withdraw()">Submit</a>
           </form>
          </div>
-        <div class="col-2"></div>
+        <div class="col-1"></div>
       </div>
       <div class="row mt-3 pt-4">
-        <div class="col-2"></div>
-        <div class="col-8">
-          <h1></h1>
+        <div class="col-1"></div>
+        <div class="col-10">
+          <h1 style="text-align: center;">Transactions</h1>
           <table class="table table-bordered table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
+                <th scope="col">DateTime</th>
                 <th scope="col">Account</th>
                 <th scope="col">Address</th>
+                <th scope="col">Deposit</th>
+                <th scope="col">Withdraw</th>
                 <th scope="col">Balance</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <th scope="row">1</th>
+                <td>DateTime</td>
                 <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
+                <td>0x5ae3D6FeBb9AEe92447Db3996CC040faf00D2F3a</td>
+                <td>1200</td>
+                <td>600</td>
+                <td>1200</td>
               </tr>
               <tr>
                 <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
+                <td>DateTime</td>
+                <td>Mark</td>
+                <td>0x5ae3D6FeBb9AEe92447Db3996CC040faf00D2F3a</td>
+                <td>1200</td>
+                <td>600</td>
+                <td>1200</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="col-2"></div>
+        <div class="col-1"></div>
       </div>
       <div class="row mt-3 pt-4">
-        <div class="col-3"></div>
-        <div class="col-6">
-          <h1>Dapp Info</h1>
-          <p id="depositRatePerYear" style="font-weight: bold;">Deposit Rate Per Year: </p>
+        <div class="col-1"></div>
+        <div class="col-10">
+          <h1 style="text-align: center;">Banking System</h1>
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Total Users</th>
+                <th scope="col">Total Supply</th>
+                <th scope="col">Deposit Rate Per Year</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>DateTime</td>
+                <td>Mark</td>
+                <td>10</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="col-3"></div>
+        <div class="col-1"></div>
       </div>
      
     </body>

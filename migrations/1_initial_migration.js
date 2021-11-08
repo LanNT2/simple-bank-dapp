@@ -7,5 +7,5 @@ module.exports = async function (deployer) {
   await  deployer.deploy(CustomOwner);
   await  deployer.deploy(ERC20Token,"RK Token", "RKToken");
   await  deployer.deploy(RKToken);
-  await  deployer.deploy(Dapp,10,100);
+  await  deployer.deploy(Dapp,RKToken.address,10);
 };
