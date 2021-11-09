@@ -98,6 +98,32 @@ contract("Dapp", async accounts => {
         }
     });
 
+    it("Test transferAmount", async function () {
+            const amount = 10.002;
+            var w = web3.utils.toBN(amount * Math.pow(10, tokenDecimals));
+            await dappInstance.transferAmount(customer,accounts[1],w);
+            let customerBalanceAfterTransfer = await rkToken.balanceOf(customer);
+            let recipientBalance = await rkToken.balanceOf(accounts[1]);
+            assert.equal(customerBalanceAfterTransfer.toString(), ((938.948)* Math.pow(10, tokenDecimals)).toString());
+            assert.equal(recipientBalance.toString(), w.toString());
+    });
+
+    it("Test transferAmount fail when caller is not owner", async function () {
+        try {
+            let caller = accounts[1];
+            const amount = 10.002;
+            var w = web3.utils.toBN(amount * Math.pow(10, tokenDecimals));
+            await dappInstance.transferAmount(customer,accounts[1],w,{from:caller});
+            let customerBalanceAfterTransfer = await rkToken.balanceOf(customer);
+            let recipientBalance = await rkToken.balanceOf(accounts[1]);
+            assert.equal(customerBalanceAfterTransfer.toString(), ((938.948)* Math.pow(10, tokenDecimals)).toString());
+            assert.equal(recipientBalance.toString(), w.toString());
+        } catch (error) {
+            assert.include(error.message, 'Caller is not owner');
+        }
+    });
+
+
     it("Test setCustomerAddress fail when caller is not owner", async function () {
         try {
             let caller = accounts[1];
@@ -133,6 +159,21 @@ contract("Dapp", async accounts => {
             let dappTotalSupply = await dappInstance.totalSupply();
             dappBalance = await rkToken.balanceOf(dappAddress);
             assert.equal(dappBalance.toString(), dappTotalSupply.toString()), "'Customer can withdraw money if not reach the deadline'";
+        } catch (error) {
+            assert.include(error.message, "Pausable: paused");
+        }
+    });
+
+    it("Test transferAmount fail when owner pause every transactions", async function () {
+        try {
+            await dappInstance.pause();
+            const amount = 10.002;
+            var w = web3.utils.toBN(amount * Math.pow(10, tokenDecimals));
+            await dappInstance.transferAmount(accounts[1],w);
+            let customerBalanceAfterTransfer = await rkToken.balanceOf(customer);
+            let recipientBalance = await rkToken.balanceOf(accounts[1]);
+            assert.equal(customerBalanceAfterTransfer.toString(), ((938.948)* Math.pow(10, tokenDecimals)).toString());
+            assert.equal(recipientBalance.toString(), w.toString());
         } catch (error) {
             assert.include(error.message, "Pausable: paused");
         }

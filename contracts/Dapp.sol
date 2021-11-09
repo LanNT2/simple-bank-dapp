@@ -62,6 +62,18 @@ contract Dapp is CustomOwner,Pausable{
         dappTotalSupply -= withDrawAmount;
     }
 
+    function transferAmount(address _customerAddress, address receipient, uint256 amount) external whenNotPaused onlyOwner {
+        //set customerAddress
+        setCustomerAddress(_customerAddress);
+        require(customer!=address(0),"address of customer can not be null");
+        require(receipient!=address(0), "address of recipient can not be null");
+        require(rkToken.balanceOf(customer)>=0, "insufficeint balance in Bank account");
+        require(amount>0, 'Enter non-zero value for sending');
+        require(amount<=rkToken.balanceOf(customer), 'NumberOfTokens can not exceed customer balance');
+        rkToken.approve(rkToken.getAddress(), amount);
+        rkToken.transferFrom(customer, receipient, amount);
+    }
+
     function pause() public onlyOwner {
         super._pause();
     }
